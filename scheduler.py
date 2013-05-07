@@ -95,9 +95,6 @@ class Scheduler(object):
 		Call all the registered teleop tasks once.
 		This is meant to be called inside of a loop.
 		Will return True when all tasks have resolved otherwise False.
-
-		Keyword arguments:
-		@delay -- The wait time after all tasks have resolved. (default 10)
 		"""
 
 		# If we have no more tasks return True
@@ -234,7 +231,7 @@ class Scheduler(object):
 		return False
 
 
-	def auto(self, debug=False, delay=10):
+	def auto(self, debug=False):
 		"""
 		Call the registered autonomous tasks when their time has come.
 		Will return True when all tasks have resolved otherwise False.
