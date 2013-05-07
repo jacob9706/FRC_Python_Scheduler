@@ -41,6 +41,38 @@ class Scheduler(object):
 		self.teleop_tasks.append([task_name, task])
 
 
+	def register_teleop_task_if_not_already(self, task_name, task):
+		"""
+		Register a callable task to be called in the
+		teleop_loop function. task must return True or
+		False. Once the function returns True the function
+		will be removed from the dictionary of tasks to
+		be called in the teleop_loop.
+
+		Unlike register_teleop_task this method will check to see in a
+		task of the name of the callable task is already registered. Not
+		the task_name you give it but task.__name__. This means that if
+		you register a Claw.teleop for one and try to register a Arm.teleop
+		with this method the Arm.teleop will not be registered.
+
+		Keyword arguments:
+		@task_name -- The name of the task.
+		@task -- A callable function that must return True or False.
+		"""
+		# If it's not callable throw a Runtime Error
+		if not hasattr(task, '__call__'):
+			raise RuntimeError(str(task_name) + " is not callable.")
+
+		for i, info in enumerate(self.teleop_tasks):
+			if info[1].__name__ == task.__name__:
+				if debug:
+					print(task.__name__, "is already registered.")
+				return
+
+		# Store the task as a list with it's name.
+		self.teleop_tasks.append([task_name, task])
+
+
 	def remove_teleop_task(self, task_name, debug=False):
 		"""
 		Remove a task based on a name. If the task is found and
@@ -58,7 +90,7 @@ class Scheduler(object):
 		return False
 
 
-	def teleop_loop(self, debug=False):
+	def teleop(self, debug=False):
 		"""
 		Call all the registered teleop tasks once.
 		This is meant to be called inside of a loop.
@@ -121,8 +153,7 @@ class Scheduler(object):
 
 		Keyword arguments:
 		@task_name -- The name of the task.
-		@task -- A List object containing the type of task and a callable function that returns 
-		         True or False
+		@task -- A callable function that must return True or False.
 		@ttype -- The type of task (default SEQUENTIAL_TASK)
 		"""
 		# If it's not callable throw a Runtime Error
@@ -130,6 +161,57 @@ class Scheduler(object):
 			raise RuntimeError(str(task_name) + " is not callable.")
 		if ttype not in [self.SEQUENTIAL_TASK, self.PARALLEL_TASK]:
 			raise RuntimeError("ttype \"" + str(ttype) + "\" is not allowed.")
+
+		# Store the task as a list with it's name and ttype.
+		self.auto_tasks.append([task_name, ttype, task])
+
+
+	def register_auto_task_if_not_already(self, task_name, task):
+		"""
+		Register an autonomous task to be executed in order they were added.
+		Autonomous tasks can be either a SEQUENTIAL_TASK or a PARALLEL_TASK.
+
+		Unlike register_auto_task this method will check to see in a
+		task of the name of the callable task is already registered. Not
+		the task_name you give it but task.__name__. This means that if
+		you register a Claw.teleop for one and try to register a Arm.teleop
+		with this method the Arm.teleop will not be registered.
+
+		A SEQUENTIAL_TASK will not be executed until all other sequential tasks
+		added before have resolved (returned True). This allows for tasks to be
+		schedualed in a "step by step" manner.
+
+		A PARALLEL_TASK will run when it is reached and continue to run until it
+		is resolved.
+
+		Example:
+		S = SEQUENTIAL_TASK
+		P = PARALLEL_TASK
+
+		S s1
+		P p1
+		S s2
+
+		In this example s1 will be the only thing running until it has resolved. After
+		it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run 
+		until it has been resolved.
+
+		Keyword arguments:
+		@task_name -- The name of the task.
+		@task -- A callable function that must return True or False.
+		@ttype -- The type of task (default SEQUENTIAL_TASK)
+		"""
+		# If it's not callable throw a Runtime Error
+		if not hasattr(task, '__call__'):
+			raise RuntimeError(str(task_name) + " is not callable.")
+		if ttype not in [self.SEQUENTIAL_TASK, self.PARALLEL_TASK]:
+			raise RuntimeError("ttype \"" + str(ttype) + "\" is not allowed.")
+
+		for i, info in enumerate(self.auto_tasks):
+			if info[1].__name__ == task.__name__:
+				if debug:
+					print(task.__name__, "is already registered.")
+				return
 
 		# Store the task as a list with it's name and ttype.
 		self.auto_tasks.append([task_name, ttype, task])
@@ -152,7 +234,7 @@ class Scheduler(object):
 		return False
 
 
-	def auto_loop(self, debug=False, delay=10):
+	def auto(self, debug=False, delay=10):
 		"""
 		Call the registered autonomous tasks when their time has come.
 		Will return True when all tasks have resolved otherwise False.
@@ -214,7 +296,7 @@ if __name__ == '__main__':
 
 	# "Teleop loop"
 	for i in range(100):
-		rc.teleop_loop(debug=True)
+		rc.teleop(debug=True)
 		rc.remove_teleop_task("test", debug=True)
 
 	print("========================== Autonomous ==========================")
@@ -243,4 +325,4 @@ if __name__ == '__main__':
 	# rc.register_auto_task("task3", test2, ttype=Scheduler.SEQUENTIAL_TASK)
 
 	for i in range(10):
-		rc.auto_loop(debug=True)
+		rc.auto(debug=True)
