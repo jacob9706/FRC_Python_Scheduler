@@ -43,8 +43,8 @@ class MyRobot(wpilib.SimpleRobot):
 	def Autonomous(self):
 		# Get an configure the watchdog
 		dog = self.GetWatchdog()
-        dog.SetEnabled(True)
-        dog.SetExpiration(1.0)
+		dog.SetEnabled(True)
+		dog.SetExpiration(1.0)
 
 		# The reason we register the autonomous each time is because
 		# when it is done and all have resolved it is cleared
