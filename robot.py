@@ -1,5 +1,7 @@
 # To test open a terminal and navigate to fake-wpilib
-# then run ./test.sh import_test --robot-path ..
+# then run "./test.sh import_test --robot-path .."
+
+# Count source files in current dir "cat *.c | wc -l"
 
 # You may notice that no OperatorControl tasks have been
 # added in this file. This is because they have been added
