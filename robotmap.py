@@ -1,4 +1,4 @@
-import wpilib
+from get_wpilib import wpilib
 
 ################### Register objects here ###################
 

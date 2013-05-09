@@ -1,3 +1,6 @@
+# To test open a terminal and navigate to fake-wpilib
+# then run ./test.sh import_test --robot-path ..
+
 # You may notice that no OperatorControl tasks have been
 # added in this file. This is because they have been added
 # within their moduals. For example in the drive.py file
@@ -10,7 +13,7 @@
 # include the modual
 
 
-import wpilib
+from get_wpilib import wpilib
 
 # Import the robot map to be able to access things like
 # joystics added at the bottom of robotmap.py
@@ -28,10 +31,12 @@ class MyRobot(wpilib.SimpleRobot):
 
 	def __init__(self):
 		super().__init__()
-		print("========== Robot Initialized ==========")
+		print("\n========== Robot Initialized ==========")
 
 
 	def Disabled(self):
+		print("\n========== Disabled Initialized ==========")
+		
 		while self.IsDisabled():
 			# Check if we should reload the code
 			self.CheckRestart()
@@ -41,6 +46,8 @@ class MyRobot(wpilib.SimpleRobot):
 
 
 	def Autonomous(self):
+		print("\n========== Autonomous Initialized ==========")
+
 		# Get an configure the watchdog
 		dog = self.GetWatchdog()
 		dog.SetEnabled(True)
@@ -55,7 +62,7 @@ class MyRobot(wpilib.SimpleRobot):
 			dog.Feed()
 
 			# Run the scheduled autonomous tasks while in enabled autonomous
-			scheduler.Autonomous(debug = True)
+			scheduler.Autonomous(debug = False)
 
 			# Wait so cpu is not running at 100%
 			wpilib.Wait(0.01)
@@ -67,6 +74,8 @@ class MyRobot(wpilib.SimpleRobot):
 
 
 	def OperatorControl(self):
+		print("\n========== OperatorControl Initialized ==========")
+
 		# Get an configure the watchdog
 		dog = self.GetWatchdog()
 		dog.SetEnabled(True)
@@ -85,7 +94,7 @@ class MyRobot(wpilib.SimpleRobot):
 
 	def CheckRestart(self):
 		if joystick1.GetRawButton(1):
-			raise RuntimeError("========== Restarting Robot ==========")
+			raise RuntimeError("\n========== Restarting Robot ==========")
 
 
 	def RegisterAutonomous(self):
@@ -94,7 +103,7 @@ class MyRobot(wpilib.SimpleRobot):
 										 # The task to add (function or method)
 										 drive.drive.DriveForTime, 
 										 # The type of task
-										 Scheduler.SEQUENTIAL_TASK,
+										 scheduler.SEQUENTIAL_TASK,
 										 # The parameters for the task.
 										 # These are unique to the task added
 										 1000, # Time to run
@@ -104,3 +113,4 @@ class MyRobot(wpilib.SimpleRobot):
 def run():
 	robot = MyRobot()
 	robot.StartCompetition()
+	return robot
