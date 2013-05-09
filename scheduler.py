@@ -24,10 +24,10 @@ class Scheduler(object):
 	def RegisterOperatorControlTask(self, taskName, task, *params):
 		"""
 		Register a callable task to be called in the
-		teleop_loop function. task must return True or
+		OperatorControl function. task must return True or
 		False. Once the function returns True the function
 		will be removed from the dictionary of tasks to
-		be called in the teleop_loop.
+		be called in the OperatorControl.
 
 		Keyword arguments:
 		@taskName -- The name of the task.
@@ -44,12 +44,12 @@ class Scheduler(object):
 	def RegisterOperatorControlTaskIfNotAlready(self, taskName, task, *params):
 		"""
 		Register a callable task to be called in the
-		teleop_loop function. task must return True or
+		OperatorControl function. task must return True or
 		False. Once the function returns True the function
 		will be removed from the dictionary of tasks to
-		be called in the teleop_loop.
+		be called in the OperatorControl.
 
-		Unlike register_teleop_task this method will check to see in a
+		Unlike RegisterOperatorControlTask this method will check to see in a
 		task of the name of the callable task is already registered. Not
 		the taskName you give it but task.__name__. This means that if
 		you register a Claw.teleop for one and try to register a Arm.teleop
@@ -187,7 +187,7 @@ class Scheduler(object):
 		Register an autonomous task to be executed in order they were added.
 		Autonomous tasks can be either a SEQUENTIAL_TASK or a PARALLEL_TASK.
 
-		Unlike register_auto_task this method will check to see in a
+		Unlike RegisterAutonomousTask this method will check to see in a
 		task of the name of the callable task is already registered. Not
 		the taskName you give it but task.__name__. This means that if
 		you register a Claw.teleop for one and try to register a Arm.teleop
