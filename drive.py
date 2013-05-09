@@ -37,6 +37,9 @@ class Drive(object):
 		# Set the motors to the values
 		leftDriveMotor.Set(left)
 		rightDriveMotor.Set(right)
+		
+		print(left)
+		print(right)
 
 		# We return false so this is never removed from the scheduler
 		return False

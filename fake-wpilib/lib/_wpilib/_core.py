@@ -31,6 +31,7 @@
 
 import math
 import threading
+import random
 
 from ._fake_time import GetClock
 import _wpilib.internal as internal
@@ -707,8 +708,13 @@ class Joystick(GenericHID):
     def GetMagnitude(self):
         return math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
         
+    # def GetRawAxis(self, axis):
+    #     return self._ds.GetStickAxis(self.port, axis)
+
     def GetRawAxis(self, axis):
-        return self._ds.GetStickAxis(self.port, axis)
+        if random.randint(1, 10) <= 5: neg = -1
+        else: neg = 1
+        return random.random() * neg
         
     def GetRawButton(self, number):
         return self._get_button(number)
