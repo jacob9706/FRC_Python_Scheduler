@@ -10,7 +10,7 @@ class Test(object):
 		print("Testing")
 		return True
 
-################### Register with scheduler ###################
+################### Register with scheduler ################### 
 from scheduler import scheduler
 
 testing = Test()
