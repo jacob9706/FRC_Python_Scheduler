@@ -1,0 +1,151 @@
+class Scheduler(__builtin__.object)
+ |  Methods defined here:
+ |  
+ |  Autonomous(self, debug=False)
+ |      Call the registered autonomous tasks when their time has come.
+ |      Will return True when all tasks have resolved otherwise False.
+ |      
+ |      See register_auto_task for an explanation of the diffrent kind of tasks.
+ |  
+ |  ClearAutonomousTasks(self)
+ |      Remove all autonomous tasks from the scheduler.
+ |  
+ |  ClearOperatorControlTasks(self)
+ |      Remove all operator control tasks form the scheduler.
+ |  
+ |  ListAutonomousTasks(self)
+ |      List all the autonomous tasks in the console.
+ |  
+ |  ListOperatorControlTasks(self)
+ |      List all operator control tasks in the console.
+ |  
+ |  OperatorControl(self, debug=False)
+ |      Call all the registered teleop tasks once.
+ |      This is meant to be called inside of a loop.
+ |      Will return True when all tasks have resolved otherwise False.
+ |  
+ |  RegisterAutonomousTask(self, taskName, task, ttype='SEQUENTIAL_TASK', *params)
+ |      Register an autonomous task to be executed in order they were added.
+ |      Autonomous tasks can be either a SEQUENTIAL_TASK or a PARALLEL_TASK.
+ |      
+ |      A SEQUENTIAL_TASK will not be executed until all other sequential tasks
+ |      added before have resolved (returned True). This allows for tasks to be
+ |      schedualed in a "step by step" manner.
+ |      
+ |      A PARALLEL_TASK will run when it is reached and continue to run until it
+ |      is resolved.
+ |      
+ |      Example:
+ |      S = SEQUENTIAL_TASK
+ |      P = PARALLEL_TASK
+ |      
+ |      S s1
+ |      P p1
+ |      S s2
+ |      
+ |      In this example s1 will be the only thing running until it has resolved. After
+ |      it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run 
+ |      until it has been resolved.
+ |      
+ |      Keyword arguments:
+ |      @taskName -- The name of the task.
+ |      @task -- A callable function that must return True or False.
+ |      @ttype -- The type of task (default SEQUENTIAL_TASK)
+ |  
+ |  RegisterAutonomousTaskIfNotAlready(self, taskName, task, ttype='SEQUENTIAL_TASK', *params)
+ |      Register an autonomous task to be executed in order they were added.
+ |      Autonomous tasks can be either a SEQUENTIAL_TASK or a PARALLEL_TASK.
+ |      
+ |      Unlike register_auto_task this method will check to see in a
+ |      task of the name of the callable task is already registered. Not
+ |      the taskName you give it but task.__name__. This means that if
+ |      you register a Claw.teleop for one and try to register a Arm.teleop
+ |      with this method the Arm.teleop will not be registered.
+ |      
+ |      A SEQUENTIAL_TASK will not be executed until all other sequential tasks
+ |      added before have resolved (returned True). This allows for tasks to be
+ |      schedualed in a "step by step" manner.
+ |      
+ |      A PARALLEL_TASK will run when it is reached and continue to run until it
+ |      is resolved.
+ |      
+ |      Example:
+ |      S = SEQUENTIAL_TASK
+ |      P = PARALLEL_TASK
+ |      
+ |      S s1
+ |      P p1
+ |      S s2
+ |      
+ |      In this example s1 will be the only thing running until it has resolved. After
+ |      it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run 
+ |      until it has been resolved.
+ |      
+ |      Keyword arguments:
+ |      @taskName -- The name of the task.
+ |      @task -- A callable function that must return True or False.
+ |      @ttype -- The type of task (default SEQUENTIAL_TASK)
+ |  
+ |  RegisterOperatorControlTask(self, taskName, task, *params)
+ |      Register a callable task to be called in the
+ |      teleop_loop function. task must return True or
+ |      False. Once the function returns True the function
+ |      will be removed from the dictionary of tasks to
+ |      be called in the teleop_loop.
+ |      
+ |      Keyword arguments:
+ |      @taskName -- The name of the task.
+ |      @task -- A callable function that must return True or False.
+ |  
+ |  RegisterOperatorControlTaskIfNotAlready(self, taskName, task, *params)
+ |      Register a callable task to be called in the
+ |      teleop_loop function. task must return True or
+ |      False. Once the function returns True the function
+ |      will be removed from the dictionary of tasks to
+ |      be called in the teleop_loop.
+ |      
+ |      Unlike register_teleop_task this method will check to see in a
+ |      task of the name of the callable task is already registered. Not
+ |      the taskName you give it but task.__name__. This means that if
+ |      you register a Claw.teleop for one and try to register a Arm.teleop
+ |      with this method the Arm.teleop will not be registered.
+ |      
+ |      Keyword arguments:
+ |      @taskName -- The name of the task.
+ |      @task -- A callable function that must return True or False.
+ |  
+ |  RemoveAutonomousTask(self, taskName, debug=False)
+ |      Remove a task based on a name. If the task is found and
+ |      removed it will return True, else it will return False.
+ |      
+ |      Keyword arguments:
+ |      @taskName -- The name of the task to remove.
+ |  
+ |  RemoveOperatorControlTask(self, taskName, debug=False)
+ |      Remove a task based on a name. If the task is found and
+ |      removed it will return True, else it will return False.
+ |      
+ |      Keyword arguments:
+ |      @taskName -- The name of the task to remove.
+ |  
+ |  __init__(self, robot_name='')
+ |      Initialize a Scheduler for maneging robot tasks.
+ |      
+ |      Keyword arguments:
+ |      @robot_name -- The name of the robot.
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |  
+ |  __dict__
+ |      dictionary for instance variables (if defined)
+ |  
+ |  __weakref__
+ |      list of weak references to the object (if defined)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |  
+ |  PARALLEL_TASK = 'PARALLEL_TASK'
+ |  
+ |  SEQUENTIAL_TASK = 'SEQUENTIAL_TASK'
