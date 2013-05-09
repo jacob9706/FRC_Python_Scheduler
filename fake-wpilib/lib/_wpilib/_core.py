@@ -85,7 +85,7 @@ class SpeedController(object):
         raise NotImplementedError()
         
     def Disable(self):
-        raise NotImplementedError()
+        self.value = 0.0
     
     
 class Accelerometer(object):

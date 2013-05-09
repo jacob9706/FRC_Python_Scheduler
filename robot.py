@@ -19,15 +19,17 @@ from get_wpilib import wpilib
 
 # Import the robot map to be able to access things like
 # joystics added at the bottom of robotmap.py
-from robotmap import joystick1
+from robotmap import *
 
 # Import the instance of Scheduler called scheduler to be 
 # able to use it.
 from scheduler import scheduler
 
-# Import the drive wich also registers the operator
-# control task.
-import drive
+# Import the modules wich also registers the operator
+# control tasks.
+from drive import *
+from testing import *
+
 
 class MyRobot(wpilib.SimpleRobot):
 
@@ -38,7 +40,7 @@ class MyRobot(wpilib.SimpleRobot):
 
 	def Disabled(self):
 		print("\n========== Disabled Initialized ==========")
-		
+
 		while self.IsDisabled():
 			# Check if we should reload the code
 			self.CheckRestart()
@@ -64,7 +66,7 @@ class MyRobot(wpilib.SimpleRobot):
 			dog.Feed()
 
 			# Run the scheduled autonomous tasks while in enabled autonomous
-			scheduler.Autonomous(debug = False)
+			scheduler.Autonomous(debug = True)
 
 			# Wait so cpu is not running at 100%
 			wpilib.Wait(0.01)
@@ -95,15 +97,29 @@ class MyRobot(wpilib.SimpleRobot):
 
 
 	def CheckRestart(self):
+		"""
+		Reload the code by raising an exception. There will be about 
+		a 5 second delay then you will be good to go.
+		"""
 		if joystick1.GetRawButton(1):
 			raise RuntimeError("\n========== Restarting Robot ==========")
 
 
 	def RegisterAutonomous(self):
+		"""
+		Register the autonomous tasks.
+		"""
+		scheduler.RegisterAutonomousTask(# The name to print for debugging
+										 "Testing", 
+										 # The task to add (function or method)
+										 testing.testing, 
+										 # The type of task
+										 scheduler.PARALLEL_TASK)
+
 		scheduler.RegisterAutonomousTask(# The name to print for debugging
 										 "Drive for one second at half speed", 
 										 # The task to add (function or method)
-										 drive.drive.DriveForTime, 
+										 drive.DriveForTime, 
 										 # The type of task
 										 scheduler.SEQUENTIAL_TASK,
 										 # The parameters for the task.
@@ -113,6 +129,11 @@ class MyRobot(wpilib.SimpleRobot):
 
 
 def run():
+	"""
+	The entrypoint for the robot.
+
+	We return the robot instance for the fake-wpilib testing.
+	"""
 	robot = MyRobot()
 	robot.StartCompetition()
 	return robot

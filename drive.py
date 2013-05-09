@@ -3,7 +3,7 @@ from get_wpilib import wpilib
 import time
 
 from kalman import Kalman
-from robotmap import leftDriveMotor, rightDriveMotor, joystick1, joystick2
+from robotmap import *
 
 class Drive(object):
 	def __init__(self):
@@ -38,8 +38,7 @@ class Drive(object):
 		leftDriveMotor.Set(left)
 		rightDriveMotor.Set(right)
 		
-		print(left)
-		print(right)
+		print("Left", left, "|", "Right", right)
 
 		# We return false so this is never removed from the scheduler
 		return False
@@ -73,7 +72,7 @@ class Drive(object):
 
 
 
-
+################### Register with scheduler ###################
 from scheduler import scheduler
 
 drive = Drive()
