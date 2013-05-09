@@ -13,6 +13,8 @@
 # include the modual
 
 
+# Import the wpilib, if it is not avaliable it will import 
+# fake wpilib
 from get_wpilib import wpilib
 
 # Import the robot map to be able to access things like
