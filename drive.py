@@ -31,12 +31,11 @@ class Drive(object):
 		"""
 
 		# Update the kalman filters
-		left = self.leftKalman.Update(joystick1.GetRawAxis(1)**3)
-		right = self.rightKalman.Update(joystick1.GetRawAxis(4)**3)
+		left = self.leftKalman.Update(joystick1.GetRawAxis(2)**3)
+		right = self.rightKalman.Update(joystick1.GetRawAxis(5)**3)
 
 		# Set the motors to the values
-		leftDriveMotor.Set(left)
-		rightDriveMotor.Set(right)
+		robotDrive.TankDrive(left, right)
 		
 		print("Left", left, "|", "Right", right)
 
@@ -45,8 +44,12 @@ class Drive(object):
 
 	def Shift(self):
 		# print("SHIFT CHECK")
-		if joystick1.GetRawButton(2):
-			pass # Shift here
+		if joystick1.GetRawButton(6):
+			shifters.Set(False)
+			print("Shifted Up")
+		elif joystick1.GetRawButton(5):
+			shifters.Set(True)
+			print("Shifted Down")
 
 	def AutoShift(self, shift=False):
 		if shift:

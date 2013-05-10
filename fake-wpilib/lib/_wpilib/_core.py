@@ -724,7 +724,7 @@ class Joystick(GenericHID):
                 self.js = pygame.joystick.Joystick(self.port-1)
                 self.js.init()
             pygame.event.pump()
-            return self.js.get_axis(axis)
+            return self.js.get_axis(axis-1)
 
         if random.randint(1, 10) <= 5: neg = -1
         else: neg = 1
@@ -740,7 +740,7 @@ class Joystick(GenericHID):
             pygame.event.pump()
             return self.js.get_button(number-1)
 
-        return self._get_button(number)
+        return self._get_button(number-1)
         
     def GetThrottle(self):
         return self.GetRawAxis(self.axes[Joystick.kThrottleAxis])
@@ -823,6 +823,13 @@ class RobotDrive(object):
         
         self.maxOutput = 1.0
         self.inverted = [1,1,1,1]
+
+    def TankDrive(self, leftSpeed, rightSpeed, square=True):
+        if square:
+            leftSpeed **= 2
+            rightSpeed **= 2
+
+        self._SetLeftRightMotorOutputs(leftSpeed, rightSpeed)
         
     def ArcadeDrive(self, *args, **kwargs):
         
