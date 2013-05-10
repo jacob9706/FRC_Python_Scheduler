@@ -4,7 +4,6 @@ from get_wpilib import wpilib
 
 # Create Joysticks
 joystick1 = wpilib.Joystick(1)
-joystick2 = wpilib.Joystick(2)
 
 # Create Motors
 leftDriveMotor = wpilib.Jaguar(1)

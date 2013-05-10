@@ -1,5 +1,5 @@
 class Kalman(object):
-	def __init__(self, q=0.00001, r=0.001, p=1.0, x=0.0 , k=0.0):
+	def __init__(self, q=0.001, r=0.1, p=1.0, x=0.0 , k=0.0):
 		self.q = q
 		self.r = r
 		self.p = p

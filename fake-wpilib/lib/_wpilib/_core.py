@@ -684,6 +684,7 @@ class Joystick(GenericHID):
                      Joystick.kDefaultZAxis, 
                      Joystick.kDefaultTwistAxis, 
                      Joystick.kDefaultThrottleAxis]
+        self.js = None
                      
         # TODO
         #self.buttons = [Joystick.kDefaultTriggerButton,
@@ -716,16 +717,29 @@ class Joystick(GenericHID):
     #     return self._ds.GetStickAxis(self.port, axis)
 
     def GetRawAxis(self, axis):
-        if pygame.joystick.get_count() >= 1:
-            js = pygame.joystick.Joystick(0)
-            x, y = js.get_ball()
-            return y
+        if pygame.joystick.get_count() >= self.port:
+            if self.js == None:
+                pygame.init()
+                pygame.joystick.init()
+                self.js = pygame.joystick.Joystick(self.port-1)
+                self.js.init()
+            pygame.event.pump()
+            return self.js.get_axis(axis)
 
         if random.randint(1, 10) <= 5: neg = -1
         else: neg = 1
         return random.random() * neg
         
     def GetRawButton(self, number):
+        if pygame.joystick.get_count() >= self.port:
+            if self.js == None:
+                pygame.init()
+                pygame.joystick.init()
+                self.js = pygame.joystick.Joystick(self.port-1)
+                self.js.init()
+            pygame.event.pump()
+            return self.js.get_button(number-1)
+
         return self._get_button(number)
         
     def GetThrottle(self):

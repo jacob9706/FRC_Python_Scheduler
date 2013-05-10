@@ -3,7 +3,7 @@ from get_wpilib import wpilib
 import time
 
 from kalman import Kalman
-from robotmap import joystick1, joystick2, leftDriveMotor, rightDriveMotor
+from robotmap import *
 
 class Drive(object):
 	def __init__(self):
@@ -31,8 +31,8 @@ class Drive(object):
 		"""
 
 		# Update the kalman filters
-		left = self.leftKalman.Update(joystick1.GetY())
-		right = self.rightKalman.Update(joystick2.GetY())
+		left = self.leftKalman.Update(joystick1.GetRawAxis(1)**3)
+		right = self.rightKalman.Update(joystick1.GetRawAxis(4)**3)
 
 		# Set the motors to the values
 		leftDriveMotor.Set(left)
