@@ -2,7 +2,7 @@
 # directory that robot.py is located, relative to this file
 robot_path = '../Framework'
 
-import _wpilib
+import _wpilib, time
 
 class Test(object):
 
@@ -18,9 +18,8 @@ class Test(object):
     def IsAutonomous(self, tm):
         '''Run a full 15 seconds of autonomous mode, then exit'''
         if self.tm is None:
-            self.tm = tm
-    
-        return tm - self.tm < 15.0
+            self.tm = time.time()
+        return time.time() - self.tm < 15
         
     def IsOperatorControl(self, tm):
         '''Continue operator control for 1000 control loops'''

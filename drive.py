@@ -3,7 +3,7 @@ from get_wpilib import wpilib
 import time
 
 from kalman import Kalman
-from robotmap import *
+from robotmap import joystick1, joystick2, leftDriveMotor, rightDriveMotor
 
 class Drive(object):
 	def __init__(self):
@@ -38,12 +38,23 @@ class Drive(object):
 		leftDriveMotor.Set(left)
 		rightDriveMotor.Set(right)
 		
-		print("Left", left, "|", "Right", right)
+		# print("Left", left, "|", "Right", right)
 
 		# We return false so this is never removed from the scheduler
 		return False
 
-	def DriveForTime(self, timeToWait=0, speed=0.5):
+	def Shift(self):
+		# print("SHIFT CHECK")
+		if joystick1.GetRawButton(2):
+			pass # Shift here
+
+	def AutoShift(self, shift=False):
+		if shift:
+			# print("Shifted")
+			pass # Shfit
+		return True
+
+	def DriveSpeed(self, speed=0.5):
 		"""
 		This will be able to be registered with the scheduler
 		and stop driving after X amount of time.
@@ -55,20 +66,11 @@ class Drive(object):
 		Keyword arguments:
 		@time -- The time to do this is milliseconds
 		"""
-		if self.time == 0:
-			self.time = time.time()
 
-		currentTime = time.time()
-		if (currentTime - self.time) >= timeToWait:
-			self.time = 0
-			leftDriveMotor.Disable()
-			rightDriveMotor.Disable()
-			return True
-		else:
-			self.time = currentTime
-			leftDriveMotor.Set(speed)
-			rightDriveMotor.Set(speed)
-			return False
+
+		leftDriveMotor.Set(speed)
+		rightDriveMotor.Set(speed)
+		return False
 
 
 
@@ -77,3 +79,4 @@ from scheduler import scheduler
 
 drive = Drive()
 scheduler.RegisterOperatorControlTask("Operator drive", drive.DriveTeleop)
+scheduler.RegisterOperatorControlTask("Operator drive shift", drive.Shift)

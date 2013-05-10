@@ -111,22 +111,27 @@ class MyRobot(wpilib.SimpleRobot):
 		"""
 		Register the autonomous tasks.
 		"""
-		scheduler.RegisterAutonomousTask(# The name to print for debugging
+		scheduler.RegisterAutonomousTimedTask(# The name to print for debugging
 										 "Testing", 
 										 # The task to add (function or method)
-										 testing.testing, 
+										 testing.testing,
+										 # Time to run
+										 6,
 										 # The type of task
 										 scheduler.PARALLEL_TASK)
 
-		scheduler.RegisterAutonomousTask(# The name to print for debugging
-										 "Drive for one second at half speed", 
+		scheduler.RegisterAutonomousTask("Shift", drive.AutoShift, scheduler.PARALLEL_TASK, True)
+
+		scheduler.RegisterAutonomousTimedTask(# The name to print for debugging
+										 "Drive for seven seconds at half speed", 
 										 # The task to add (function or method)
-										 drive.DriveForTime, 
+										 drive.DriveSpeed,
+										 # Time to run
+										 7,
 										 # The type of task
 										 scheduler.SEQUENTIAL_TASK,
 										 # The parameters for the task.
 										 # These are unique to the task added
-										 1000, # Time to run
 										 0.5) # Speed to run at
 
 

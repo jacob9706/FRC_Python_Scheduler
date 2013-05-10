@@ -7,11 +7,11 @@ class Test(object):
 		"""
 		Print to the console.
 		"""
-		print("Testing")
-		return True
+		# print("Testing")
+		return False
 
 ################### Register with scheduler ################### 
-from scheduler import scheduler
+# from scheduler import scheduler
 
 testing = Test()
-scheduler.RegisterOperatorControlTask("Testing", testing.testing)
+# scheduler.RegisterOperatorControlTask("Testing", testing.testing)
