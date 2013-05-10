@@ -23,6 +23,7 @@ class Scheduler(object):
 		self.auto_tasks = []
 
 		self.lastTime = time.time()
+		self.log = False
 
 
 	def RegisterOperatorControlTask(self, taskName, task, *params):
@@ -364,7 +365,7 @@ class Scheduler(object):
 
 		# A list of tasks to remove when done
 		to_delete = []
-		currTime = time.time()
+		
 		# Loop through the registered tasks
 		for i, info in enumerate(self.auto_tasks):
 			name, ttype, task, params, timeToRun, startTime = info
@@ -373,9 +374,9 @@ class Scheduler(object):
 				info[5] = time.time()
 				startTime = info[5]
 
-			if time.time() - self.lastTime >= 1:
+			if debug and self.log:
 				print(name, "is running.")
-				
+
 			# If the task has resolved
 			result = task(*params)
 			finished = False
@@ -389,8 +390,12 @@ class Scheduler(object):
 				# If it is a sequential task we can not move on so break	
 				if ttype == self.SEQUENTIAL_TASK:
 					break
-		if time.time() - self.lastTime >= 1:
-			self.lastTime = time.time()
+		if debug:
+			if time.time() - self.lastTime >= 1:
+				self.lastTime = time.time()
+				self.log = True
+			else:
+				self.log = False
 		# Remove the resolved tasks
 		for i in sorted(to_delete, reverse=True):
 			del self.auto_tasks[i]
