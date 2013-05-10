@@ -32,6 +32,7 @@
 import math
 import threading
 import random
+import pygame
 
 from ._fake_time import GetClock
 import _wpilib.internal as internal
@@ -42,6 +43,9 @@ import _wpilib.internal as internal
 #
 #################################################
 
+pygame.joystick.init()
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+print("Joysitcks:", pygame.joystick.get_init())
 
 def IsAutonomous():
     return internal.on_IsAutonomous(GetClock())
@@ -712,6 +716,11 @@ class Joystick(GenericHID):
     #     return self._ds.GetStickAxis(self.port, axis)
 
     def GetRawAxis(self, axis):
+        if pygame.joystick.get_count() >= 1:
+            js = pygame.joystick.Joystick(0)
+            x, y = js.get_ball()
+            return y
+
         if random.randint(1, 10) <= 5: neg = -1
         else: neg = 1
         return random.random() * neg
