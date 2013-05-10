@@ -21,13 +21,12 @@ class Test(object):
         if self.tm is None:
             self.tm = time.time()
         return time.time() - self.tm < 15
-        # return False
         
     def IsOperatorControl(self, tm):
-        '''Run a full 2 minutes of teleop mode, then exit'''
-        if self.tm2 is None:
-            self.tm2 = time.time()
-        return time.time() - self.tm2 < (2*60)
+        if self.loop_count < 1:
+            self.loop_count += 1
+            return True
+        return False
         
 
 

@@ -17,14 +17,10 @@ class Test(object):
         self.tm2 = None
         
     def IsAutonomous(self, tm):
-        '''Run a full 15 seconds of autonomous mode, then exit'''
-        if self.tm is None:
-            self.tm = time.time()
-        return time.time() - self.tm < 15
-        # return False
+        return False
         
     def IsOperatorControl(self, tm):
-        '''Run a full 2 minutes of teleop mode, then exit'''
+        '''Continue operator control for 1000 control loops'''
         if self.tm2 is None:
             self.tm2 = time.time()
         return time.time() - self.tm2 < (2*60)

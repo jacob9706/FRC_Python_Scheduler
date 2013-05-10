@@ -71,8 +71,7 @@ class Drive(object):
 		"""
 
 
-		leftDriveMotor.Set(speed)
-		rightDriveMotor.Set(speed)
+		robotDrive.TankDrive(speed, speed)
 		return False
 
 

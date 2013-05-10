@@ -16,15 +16,18 @@ class Test(object):
         self.tm = None
         
     def IsAutonomous(self, tm):
-        '''Run a full 15 seconds of autonomous mode, then exit'''
-        if self.tm is None:
-            self.tm = tm
-        return tm - self.tm < 15000
+        if self.loop_count < 1:
+            self.loop_count += 1
+            return True
+        self.loop_count = 0
+        return False
         
     def IsOperatorControl(self, tm):
-        '''Continue operator control for 1000 control loops'''
-        self.loop_count += 1
-        return not self.loop_count == 1000
+        if self.loop_count < 1:
+            self.loop_count += 1
+            return True
+        self.loop_count = 0
+        return False
         
 
 
