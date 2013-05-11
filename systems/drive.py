@@ -19,7 +19,7 @@ class Drive(object):
 
 	def DriveTeleop(self):
 		"""
-		This is the method we will register as a task with the 
+		This is the method we will register as a task with the
 		scheduler to be called in OperatorControl (ie. teleop)
 
 		It is named "DriveTeleop" because when it is registered
@@ -35,7 +35,7 @@ class Drive(object):
 
 		# Set the motors to the values
 		robotDrive.TankDrive(left, right)
-		
+
 		# print("Left", left, "|", "Right", right)
 
 		# We return false so this is never removed from the scheduler
@@ -45,7 +45,7 @@ class Drive(object):
 		# print("SHIFT CHECK")
 		if joystick1.GetRawButton(11):
 			shifters.Set(False)
-			print("Shifted Up")
+			print("Shifted Up"
 		elif joystick1.GetRawButton(10):
 			shifters.Set(True)
 			print("Shifted Down")
@@ -61,22 +61,6 @@ class Drive(object):
 		This will be able to be registered with the scheduler
 		and stop driving after X amount of time.
 
-		The reason we default time to 0 is just in case the 
+		The reason we default time to 0 is just in case the
 		method is registered with the scheduler without any
 		parameters.
-
-		Keyword arguments:
-		@speed -- The speed to drive (default 0.5)
-		"""
-
-		robotDrive.TankDrive(speed, speed)
-		return False
-
-
-
-################### Register with scheduler ###################
-from systems.scheduler import scheduler
-
-drive = Drive()
-scheduler.RegisterOperatorControlTask("Operator drive", drive.DriveTeleop)
-scheduler.RegisterOperatorControlTask("Operator drive shift", drive.Shift)
