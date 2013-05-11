@@ -2,14 +2,13 @@ from get_wpilib import wpilib
 
 import time
 
-from kalman import Kalman
+from utilities.kalman import Kalman
 from robotmap import *
 
 class Drive(object):
 	def __init__(self):
 		"""
-		Fetch all the required objects for the system and do 
-		things like create filters or initialize variables.
+		Do things like create filters or initialize variables.
 		"""
 		# Create the kalman filters
 		self.leftKalman = Kalman()
@@ -37,17 +36,17 @@ class Drive(object):
 		# Set the motors to the values
 		robotDrive.TankDrive(left, right)
 		
-		print("Left", left, "|", "Right", right)
+		# print("Left", left, "|", "Right", right)
 
 		# We return false so this is never removed from the scheduler
 		return False
 
 	def Shift(self):
 		# print("SHIFT CHECK")
-		if joystick1.GetRawButton(6):
+		if joystick1.GetRawButton(11):
 			shifters.Set(False)
 			print("Shifted Up")
-		elif joystick1.GetRawButton(5):
+		elif joystick1.GetRawButton(10):
 			shifters.Set(True)
 			print("Shifted Down")
 
@@ -67,9 +66,8 @@ class Drive(object):
 		parameters.
 
 		Keyword arguments:
-		@time -- The time to do this is milliseconds
+		@speed -- The speed to drive (default 0.5)
 		"""
-
 
 		robotDrive.TankDrive(speed, speed)
 		return False
@@ -77,7 +75,7 @@ class Drive(object):
 
 
 ################### Register with scheduler ###################
-from scheduler import scheduler
+from systems.scheduler import scheduler
 
 drive = Drive()
 scheduler.RegisterOperatorControlTask("Operator drive", drive.DriveTeleop)

@@ -21,7 +21,6 @@ class Test(object):
         if self.tm is None:
             self.tm = time.time()
         return time.time() - self.tm < 15
-        # return False
         
     def IsOperatorControl(self, tm):
         '''Run a full 2 minutes of teleop mode, then exit'''
@@ -48,5 +47,3 @@ def run_tests( robot_module, myrobot ):
     
     test.Reset()
     myrobot.OperatorControl()
-
-

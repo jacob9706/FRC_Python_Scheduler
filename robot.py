@@ -25,13 +25,13 @@ from robotmap import *
 
 # Import the instance of Scheduler called scheduler to be 
 # able to use it.
-from scheduler import scheduler
+from systems.scheduler import scheduler
 
 # Import the modules wich also registers the operator
 # control tasks.
-from drive import *
-from testing import *
-
+from systems.drive import drive
+from systems.collector import collector
+from systems.tilt import tilt
 
 class MyRobot(wpilib.SimpleRobot):
 
@@ -111,14 +111,6 @@ class MyRobot(wpilib.SimpleRobot):
 		"""
 		Register the autonomous tasks.
 		"""
-		scheduler.RegisterAutonomousTimedTask(# The name to print for debugging
-										 "Testing", 
-										 # The task to add (function or method)
-										 testing.testing,
-										 # Time to run
-										 6,
-										 # The type of task
-										 scheduler.PARALLEL_TASK)
 
 		scheduler.RegisterAutonomousTask("Shift", drive.AutoShift, scheduler.PARALLEL_TASK, True)
 

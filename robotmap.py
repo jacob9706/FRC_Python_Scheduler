@@ -1,18 +1,31 @@
 from get_wpilib import wpilib
 
-################### Register objects here ###################
+################### Create objects here ###################
 
-# Create Joysticks
+# Joysticks
 joystick1 = wpilib.Joystick(1)
 joystick2 = wpilib.Joystick(2)
 
-# Create Motors
+
+# Drive System
 frontLeftMotor = wpilib.Jaguar(3)
 rearLeftMotor = wpilib.Jaguar(4)
 frontRightMotor = wpilib.Jaguar(1)
 rearRightMotor = wpilib.Jaguar(2)
+shifters = wpilib.Solenoid(7)
 
 robotDrive = wpilib.RobotDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor)
 
-# Create Solenoid
-shifters = wpilib.Solenoid(1)
+
+# Colector System
+upperCollectorMotor = wpilib.Talon(7)
+lowerCollectorMotor = wpilib.Talon(8)
+
+
+# Tilt System
+tiltMotor = wpilib.Talon(6)
+
+tiltZeroSwitch = wpilib.DigitalInput(1);
+tiltSeventySwitch = wpilib.DigitalInput(3);
+
+tiltEncoder = wpilib.Encoder(5, 6)

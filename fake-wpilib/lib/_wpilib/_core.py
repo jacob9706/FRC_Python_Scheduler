@@ -90,6 +90,9 @@ class SpeedController(object):
         
     def Disable(self):
         self.value = 0.0
+
+    def PIDWrite(self,value):
+        pass
     
     
 class Accelerometer(object):
@@ -581,6 +584,7 @@ class Encoder(object):
         self.value = None
         self.pid_mode = Encoder.kDistance
         self.rate = 0 # TODO: calculate this
+        self.value = 0 # TODO: calculate this
         
     def Get(self):
         return self.value
@@ -1030,6 +1034,20 @@ class Solenoid(object):
     def Set(self, value):
         self.value = value
 
+
+class Talon(SpeedController):
+
+    def __init__(self, channel):
+        SpeedController.__init__(self)
+        DigitalModule._add_pwm( channel, self )
+        self.value = 0
+        
+    def Get(self):
+        return self.value
+        
+    def Set(self, value):
+        self.value = value
+
         
 class Ultrasonic(object):
 
@@ -1121,4 +1139,3 @@ class Watchdog(object):
             
         def SetExpiration(self, period):
             self.expiration = float(period)
-        
