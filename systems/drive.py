@@ -45,7 +45,7 @@ class Drive(object):
 		# print("SHIFT CHECK")
 		if joystick1.GetRawButton(11):
 			shifters.Set(False)
-			print("Shifted Up"
+			print("Shifted Up")
 		elif joystick1.GetRawButton(10):
 			shifters.Set(True)
 			print("Shifted Down")
@@ -64,3 +64,19 @@ class Drive(object):
 		The reason we default time to 0 is just in case the
 		method is registered with the scheduler without any
 		parameters.
+
+		Keyword arguments:
+		@speed -- The speed to drive (default 0.5)
+		"""
+
+		robotDrive.TankDrive(speed, speed)
+		return False
+
+
+
+################### Register with scheduler ###################
+from systems.scheduler import scheduler
+
+drive = Drive()
+scheduler.RegisterOperatorControlTask("Operator drive", drive.DriveTeleop)
+scheduler.RegisterOperatorControlTask("Operator drive shift", drive.Shift)

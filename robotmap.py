@@ -1,4 +1,5 @@
 from get_wpilib import wpilib
+from utilities.smooth_encoder import SmoothEncoder
 
 ################### Create objects here ###################
 
@@ -29,3 +30,9 @@ tiltZeroSwitch = wpilib.DigitalInput(1);
 tiltSeventySwitch = wpilib.DigitalInput(3);
 
 tiltEncoder = wpilib.Encoder(5, 6)
+
+# Shooter System
+shooterMotor = wpilib.Talon(5)
+
+shooterEncoder = SmoothEncoder(7, 8, True)
+shooterEncoder.pid_mode = wpilib.Encoder.kRate

@@ -4,26 +4,27 @@ from robotmap import *
 
 from utilities.pid import PID
 
+SHOOTER_SCALE_FACTOR = 24800.0
 
-TILT_FRISBEE_LOAD = -20; # Prod 0
-TILT_MID_COURT = -675; # Prod -495 |  21 deg -589
-TILT_PYRIMID_SIDE_PRACTICE = -678; # Prod(?)
-TILT_3QUARTS_COURT = -614; # Prod(-472) | 17-1/2 deg -472 at 85%
+SHOOTER_POWER_SAVING_MODE = 0.4;
+SHOOTER_PYRIMID = 0.55;
+SHOOTER_INFIELD = 0.8;
+SHOOTER_3QUARTERS = 0.85;
 
-class Tilt(object):
+class Shooter(object):
 
 	def __init__(self):
 		"""
 		Do things like create filters or initialize variables.
 		"""
-
-		self.pidCalculator = PID(.009, 0, 0, tiltEncoder)
+		shooterEncoder.scaleFactor = SHOOTER_SCALE_FACTOR
+		self.pidCalculator = PID(.1, 0, 0, shooterEncoder)
 		self.pidCalculator.SetOutputRange(-1.0, 1.0)
 		self.pidCalculator.Enable()
 
 		self.enabled = True
 
-	def TiltTeleop(self):
+	def ShooterTeleop(self):
 		"""
 		This is the method we will register as a task with the
 		scheduler to be called in OperatorControl (ie. teleop)
@@ -34,43 +35,42 @@ class Tilt(object):
 		If it was just Teleop and we had a Teleop method from
 		another class registered it would not schedule it.
 		"""
-
 		if self.enabled:
 			# If Y is pressed
 			if joystick1.GetRawButton(4):
-				self.TiltToValue(TILT_FRISBEE_LOAD)
+				self.SetSpeed(SHOOTER_POWER_SAVING_MODE)
 			# If X is pressed
 			if joystick1.GetRawButton(3):
-				self.TiltToValue(TILT_MID_COURT)
+				self.SetSpeed(SHOOTER_INFIELD)
 			# If B is pressed
 			if joystick1.GetRawButton(2):
-				self.TiltToValue(TILT_PYRIMID_SIDE_PRACTICE)
+				self.SetSpeed(SHOOTER_INFIELD)
 			# If A is pressed
 			if joystick1.GetRawButton(1):
-				self.TiltToValue(TILT_3QUARTS_COURT)
+				self.SetSpeed(SHOOTER_3QUARTERS)
+			if joystick1.GetRawButton(7):
+				shooterMotor.Disable()
+				self.SetSpeed(0.0)
+				self.pidCalculator.Reset()
 
 			# Use calculated PID value
 			output = self.pidCalculator.Get()
-			# Safety Checks
-			if (tiltZeroSwitch.Get() and output > 0) or (tiltSeventySwitch.Get() and output < 0):
-				tiltMotor.Disable()
-				self.tiltToValue(self.pidCalculator.GetSetpoint())
-				self.pidCalculator.Reset()
-			else:
-				# Set output of motor
-				tiltMotor.Set(output)
-			#print("Tilt Motor", tiltMotor.Get())
+			
+			# Set output of motor
+			shooterMotor.Set(output)
+			
+			print("Shooter Motor", shooterMotor.Get())
 		else:
 			self.pidCalculator.Reset()
 			tiltMotor.Disable()
 
-	def TiltToValue(self, value):
-		self.pidCalculator.SetSetpoint(value)
+	def SetSpeed(self, speed):
+		self.pidCalculator.SetSetpoint(speed)
 		if not self.pidCalculator.IsEnabled():
 			self.pidCalculator.Enable()
 
 ################### Register with scheduler ###################
 from systems.scheduler import scheduler
 
-tilt = Tilt()
-scheduler.RegisterOperatorControlTask("Shooter Teleop", tilt.TiltTeleop)
+shooter = Shooter()
+scheduler.RegisterOperatorControlTask("Shooter Teleop", shooter.ShooterTeleop)

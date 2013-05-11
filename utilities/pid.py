@@ -48,3 +48,9 @@ class PID(wpilib.PIDController):
 
 		    pidOutput = self.m_pidOutput
 		    result = self.m_result
+		    
+	def Disable(self):
+		'''
+		* Stop running the PIDController, this sets the output to zero before stopping.
+		'''
+		self.m_enabled = False
