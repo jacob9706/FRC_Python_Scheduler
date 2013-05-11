@@ -31,6 +31,7 @@ from systems.scheduler import scheduler
 # control tasks.
 from systems.drive import drive
 from systems.collector import collector
+from systems.shooter import shooter
 from systems.tilt import tilt
 
 class MyRobot(wpilib.SimpleRobot):

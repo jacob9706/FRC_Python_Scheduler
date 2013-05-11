@@ -25,6 +25,8 @@ class Scheduler(object):
 		self.lastTime = time.time()
 		self.log = False
 
+		print("\n========= Scheduler for %s created ========" % self.robot_name)
+
 
 	def RegisterOperatorControlTask(self, taskName, task, *params):
 		"""
@@ -169,7 +171,7 @@ class Scheduler(object):
 		S s2
 
 		In this example s1 will be the only thing running until it has resolved. After
-		it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run 
+		it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run
 		until it has been resolved.
 
 		Keyword arguments:
@@ -208,7 +210,7 @@ class Scheduler(object):
 		S s2
 
 		In this example s1 will be the only thing running until it has resolved. After
-		it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run 
+		it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run
 		until it has been resolved.
 
 		Keyword arguments:
@@ -253,7 +255,7 @@ class Scheduler(object):
 		S s2
 
 		In this example s1 will be the only thing running until it has resolved. After
-		it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run 
+		it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run
 		until it has been resolved.
 
 		Keyword arguments:
@@ -304,7 +306,7 @@ class Scheduler(object):
 		S s2
 
 		In this example s1 will be the only thing running until it has resolved. After
-		it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run 
+		it has resolved p1 and s2 will be run. if s2 resolves p1 will continue to run
 		until it has been resolved.
 
 		Keyword arguments:
@@ -365,7 +367,7 @@ class Scheduler(object):
 
 		# A list of tasks to remove when done
 		to_delete = []
-		
+
 		# Loop through the registered tasks
 		for i, info in enumerate(self.auto_tasks):
 			name, ttype, task, params, timeToRun, startTime = info
@@ -387,7 +389,7 @@ class Scheduler(object):
 				to_delete.append(i)
 				if debug:
 					print(name, "has resolved.")
-				# If it is a sequential task we can not move on so break	
+				# If it is a sequential task we can not move on so break
 				if ttype == self.SEQUENTIAL_TASK:
 					break
 		if debug:
