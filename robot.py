@@ -32,7 +32,12 @@ from systems.scheduler import scheduler
 from systems.drive import drive
 from systems.collector import collector
 from systems.shooter import shooter
+
+# Do both so we don't have to refer to tilt.tilt and were
+# also have access to constants
 from systems.tilt import tilt
+
+from utilities import wait
 
 class MyRobot(wpilib.SimpleRobot):
 
@@ -63,6 +68,7 @@ class MyRobot(wpilib.SimpleRobot):
 		# The reason we register the autonomous each time is because
 		# when it is done and all have resolved it is cleared
 		self.RegisterAutonomous()
+		scheduler.ListAutonomousTasks()
 
 		while self.IsAutonomous() and self.IsEnabled():
 			# Feed the watchdog
@@ -112,21 +118,28 @@ class MyRobot(wpilib.SimpleRobot):
 		"""
 		Register the autonomous tasks.
 		"""
-
-		scheduler.RegisterAutonomousTask("Shift", drive.AutoShift, scheduler.PARALLEL_TASK, True)
-
-		scheduler.RegisterAutonomousTimedTask(# The name to print for debugging
-										 "Drive for seven seconds at half speed", 
-										 # The task to add (function or method)
-										 drive.DriveSpeed,
-										 # Time to run
-										 7,
-										 # The type of task
-										 scheduler.SEQUENTIAL_TASK,
-										 # The parameters for the task.
-										 # These are unique to the task added
-										 0.5) # Speed to run at
-
+		# These run the whole time to spin the wheel and make sure the tilt 
+		# statys at the right position
+		scheduler.RegisterAutonomousTask("ShooterContinuous", shooter.ShooterContinuous, scheduler.PARALLEL_TASK)
+		scheduler.RegisterAutonomousTask("TiltContinuous", tilt.TiltContinuous, scheduler.PARALLEL_TASK)
+		
+		# Spin up wheel, tilt and wait 3 seconds for it to reach speed		
+		scheduler.RegisterAutonomousTask("Set Shooter Speed 0.5", shooter.SetSpeed, scheduler.PARALLEL_TASK, shooter.SHOOTER_INFIELD)
+		scheduler.RegisterAutonomousTask("Tilt", tilt.TiltToValue, scheduler.PARALLEL_TASK, tilt.TILT_PYRIMID_SIDE_PRACTICE)
+		
+		# The wait.Wait() is just an enpty function. The scheduler just waits
+		# for the registered empty task to timeout
+		scheduler.RegisterAutonomousTimedTask("Wait 3 Seconds", wait.Wait, 3.0)
+		
+		# Add 3 sequential shots
+		scheduler.RegisterAutonomousTask("Shoot And Load1", shooter.ShootAndLoad)
+		scheduler.RegisterAutonomousTask("Shoot And Load2", shooter.ShootAndLoad)
+		scheduler.RegisterAutonomousTask("Shoot And Load3", shooter.ShootAndLoad)
+		
+		# Tilt back down and put wheel in powersaver mode
+		scheduler.RegisterAutonomousTask("SHOOTER POWER SAVING MODE", shooter.SetSpeed, scheduler.PARALLEL_TASK, shooter.SHOOTER_POWER_SAVING_MODE)
+		scheduler.RegisterAutonomousTask("Tilt", tilt.TiltToValue, scheduler.PARALLEL_TASK, tilt.TILT_PYRIMID_SIDE_PRACTICE)
+		
 
 def run():
 	"""

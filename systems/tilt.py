@@ -5,12 +5,12 @@ from robotmap import *
 from utilities.pid import PID
 
 
-TILT_FRISBEE_LOAD = -20; # Prod 0
-TILT_MID_COURT = -675; # Prod -495 |  21 deg -589
-TILT_PYRIMID_SIDE_PRACTICE = -678; # Prod(?)
-TILT_3QUARTS_COURT = -614; # Prod(-472) | 17-1/2 deg -472 at 85%
-
 class Tilt(object):
+
+	TILT_FRISBEE_LOAD = -20; # Prod 0
+	TILT_MID_COURT = -675; # Prod -495 |  21 deg -589
+	TILT_PYRIMID_SIDE_PRACTICE = -678; # Prod(?)
+	TILT_3QUARTS_COURT = -614; # Prod(-472) | 17-1/2 deg -472 at 85%
 
 	def __init__(self):
 		"""
@@ -18,7 +18,6 @@ class Tilt(object):
 		"""
 
 		self.pidCalculator = PID(.009, 0, 0, tiltEncoder)
-		self.pidCalculator.SetOutputRange(-1.0, 1.0)
 		self.pidCalculator.Enable()
 
 		self.enabled = True
@@ -38,36 +37,52 @@ class Tilt(object):
 		if self.enabled:
 			# If Y is pressed
 			if joystick1.GetRawButton(4):
-				self.TiltToValue(TILT_FRISBEE_LOAD)
+				self.TiltToValue(Tilt.TILT_FRISBEE_LOAD)
 			# If X is pressed
 			if joystick1.GetRawButton(3):
-				self.TiltToValue(TILT_MID_COURT)
+				self.TiltToValue(Tilt.TILT_MID_COURT)
 			# If B is pressed
 			if joystick1.GetRawButton(2):
-				self.TiltToValue(TILT_PYRIMID_SIDE_PRACTICE)
+				self.TiltToValue(Tilt.TILT_PYRIMID_SIDE_PRACTICE)
 			# If A is pressed
 			if joystick1.GetRawButton(1):
-				self.TiltToValue(TILT_3QUARTS_COURT)
-
-			# Use calculated PID value
-			output = self.pidCalculator.Get()
-			# Safety Checks
-			if (tiltZeroSwitch.Get() and output > 0) or (tiltSeventySwitch.Get() and output < 0):
-				tiltMotor.Disable()
-				self.tiltToValue(self.pidCalculator.GetSetpoint())
-				self.pidCalculator.Reset()
-			else:
-				# Set output of motor
-				tiltMotor.Set(output)
-			#print("Tilt Motor", tiltMotor.Get())
+				self.TiltToValue(Tilt.TILT_3QUARTS_COURT)
+			self.TiltContinuous()
 		else:
 			self.pidCalculator.Reset()
 			tiltMotor.Disable()
+			
+	def TiltContinuous(self):
+		# Use calculated PID value
+		output = self.pidCalculator.Get()
+		# Safety Checks
+		if (tiltZeroSwitch.Get() and output > 0) or (tiltSeventySwitch.Get() and output < 0):
+			tiltMotor.Disable()
+			self.tiltToValue(self.pidCalculator.GetSetpoint())
+			self.pidCalculator.Reset()
+		else:
+			# Set output of motor
+			tiltMotor.Set(output)
+		#print("Tilt Motor", tiltMotor.Get())
 
 	def TiltToValue(self, value):
 		self.pidCalculator.SetSetpoint(value)
 		if not self.pidCalculator.IsEnabled():
 			self.pidCalculator.Enable()
+		return True
+	
+	def TiltCalibrate(self):
+		if not self.pidCalculator.IsEnabled():
+			self.pidCalculator.Enable()
+			
+		if not tiltZeroSwitch.Get():
+			current = self.pidCalculator.GetSetpoint()
+			self.pidCalculator.SetSetpoint(current + 10)
+			return False
+		else:
+			self.pidCalculator.SetSetpoint(0)
+			tiltEncoder.Reset()
+			return True
 
 ################### Register with scheduler ###################
 from systems.scheduler import scheduler

@@ -13,7 +13,11 @@ frontLeftMotor = wpilib.Jaguar(3)
 rearLeftMotor = wpilib.Jaguar(4)
 frontRightMotor = wpilib.Jaguar(1)
 rearRightMotor = wpilib.Jaguar(2)
+
 shifters = wpilib.Solenoid(7)
+
+leftDriveEncoder = wpilib.Encoder(9, 10)
+rightDriveEncoder = wpilib.Encoder(11, 12, True)
 
 robotDrive = wpilib.RobotDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor)
 
@@ -31,8 +35,12 @@ tiltSeventySwitch = wpilib.DigitalInput(3);
 
 tiltEncoder = wpilib.Encoder(5, 6)
 
+
 # Shooter System
 shooterMotor = wpilib.Talon(5)
 
 shooterEncoder = SmoothEncoder(7, 8, True)
 shooterEncoder.pid_mode = wpilib.Encoder.kRate
+
+shooterSolenoid = wpilib.Solenoid(1)
+hopperSolenoid = wpilib.Solenoid(8)

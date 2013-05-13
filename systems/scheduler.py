@@ -389,11 +389,12 @@ class Scheduler(object):
 				to_delete.append(i)
 				if debug:
 					print(name, "has resolved.")
-				# If it is a sequential task we can not move on so break
-				if ttype == self.SEQUENTIAL_TASK:
-					break
+			# If it is a sequential task we can not move on so break
+			if ttype == self.SEQUENTIAL_TASK:
+				break
 		if debug:
 			if time.time() - self.lastTime >= 1:
+				print()
 				self.lastTime = time.time()
 				self.log = True
 			else:

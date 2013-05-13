@@ -5,6 +5,8 @@ import time
 from utilities.kalman import Kalman
 from robotmap import *
 
+from utilities.pid import PIDDiffrence
+
 class Drive(object):
 	def __init__(self):
 		"""
@@ -13,9 +15,14 @@ class Drive(object):
 		# Create the kalman filters
 		self.leftKalman = Kalman()
 		self.rightKalman = Kalman()
+		
+		# Initialize PIDDiffrence for calculating error
+		# in the wheels. That means that self.pidDiff.Get() will return the
+		# value for the motor to get left-right to the setpoint
+		self.pidDiff = PIDDiffrence(0.01, 0, 0, leftDriveEncoder, rightDriveEncoder)
 
 		# Initialize variables for DriveForTime
-		self.time = 0
+		self.driveDistanceStarted = False
 
 	def DriveTeleop(self):
 		"""
@@ -58,12 +65,7 @@ class Drive(object):
 
 	def DriveSpeed(self, speed=0.5):
 		"""
-		This will be able to be registered with the scheduler
-		and stop driving after X amount of time.
-
-		The reason we default time to 0 is just in case the
-		method is registered with the scheduler without any
-		parameters.
+		This will be able to be registered with the scheduler.
 
 		Keyword arguments:
 		@speed -- The speed to drive (default 0.5)
@@ -71,7 +73,35 @@ class Drive(object):
 
 		robotDrive.TankDrive(speed, speed)
 		return False
-
+	
+	def DriveDistance(self, distance, speed=0.5):
+		"""
+		This will be able to be registered with the scheduler
+		and stop driving after after the distance is reached.
+		
+		Keyword arguments:
+		@distance -- The distance to drive in encoder ticks
+		@speed -- The speed to drive as a positive (default 0.5)
+		"""
+		if not self.driveDistanceStarted:
+			self.driveDistanceStarted = True
+			leftDriveEncoder.Reset()
+			self.pidDiff.Reset()
+			# Set encoders to be the same
+			self.pidDiff.SetSetpoint(0.0)
+			self.pidDiff.Enable()
+			# Positive or negative speed
+			self.direction = distance / abs(distance)
+		
+		# I believe we may need to subtract the diff from the right
+		diff = self.pidDiff.Get()
+		leftDriveEncoder.value+=.01
+		print(diff)
+		leftSpeed = speed*self.direction + diff
+		rightSpeed = speed*self.direction
+		
+		
+		
 
 
 ################### Register with scheduler ###################
