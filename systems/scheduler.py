@@ -5,6 +5,8 @@ Version: Pre-Alpha 0.1
 
 import time
 
+debug=True
+
 class Scheduler(object):
 	# Modes for autonomous tasks
 	PARALLEL_TASK = "PARALLEL_TASK"

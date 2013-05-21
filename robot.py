@@ -9,13 +9,13 @@
 # we have the class definition then under that we have an
 # import for the scheduler object declared at the bottom
 # of the scheduler.py file. Under the import we register
-# the Drive.DriveTeleop() with the scheduler. This allows 
+# the Drive.DriveTeleop() with the scheduler. This allows
 # for us to keep the robot.py file pretty clean. for an
 # operator control task to registered you just have to
 # include the modual
 
 
-# Import the wpilib, if it is not avaliable it will import 
+# Import the wpilib, if it is not avaliable it will import
 # fake wpilib
 from get_wpilib import wpilib
 
@@ -23,7 +23,7 @@ from get_wpilib import wpilib
 # joystics added at the bottom of robotmap.py
 from robotmap import *
 
-# Import the instance of Scheduler called scheduler to be 
+# Import the instance of Scheduler called scheduler to be
 # able to use it.
 from systems.scheduler import scheduler
 
@@ -52,7 +52,7 @@ class MyRobot(wpilib.SimpleRobot):
 		while self.IsDisabled():
 			# Check if we should reload the code
 			self.CheckRestart()
-			
+
 			# Wait so cpu is not running at 100%
 			wpilib.Wait(0.01)
 
@@ -68,7 +68,7 @@ class MyRobot(wpilib.SimpleRobot):
 		# The reason we register the autonomous each time is because
 		# when it is done and all have resolved it is cleared
 		self.RegisterAutonomous()
-		scheduler.ListAutonomousTasks()
+		# scheduler.ListAutonomousTasks()
 
 		while self.IsAutonomous() and self.IsEnabled():
 			# Feed the watchdog
@@ -99,7 +99,7 @@ class MyRobot(wpilib.SimpleRobot):
 			dog.Feed()
 
 			# Run the scheduled operator control tasks while enabled
-			scheduler.OperatorControl(debug = False)
+			scheduler.OperatorControl(debug = not True)
 
 			# Wait so cpu is not running at 100%
 			wpilib.Wait(0.01)
@@ -107,7 +107,7 @@ class MyRobot(wpilib.SimpleRobot):
 
 	def CheckRestart(self):
 		"""
-		Reload the code by raising an exception. There will be about 
+		Reload the code by raising an exception. There will be about
 		a 5 second delay then you will be good to go.
 		"""
 		if joystick1.GetRawButton(1):
@@ -118,28 +118,28 @@ class MyRobot(wpilib.SimpleRobot):
 		"""
 		Register the autonomous tasks.
 		"""
-		# These run the whole time to spin the wheel and make sure the tilt 
+		# These run the whole time to spin the wheel and make sure the tilt
 		# statys at the right position
 		scheduler.RegisterAutonomousTask("ShooterContinuous", shooter.ShooterContinuous, scheduler.PARALLEL_TASK)
 		scheduler.RegisterAutonomousTask("TiltContinuous", tilt.TiltContinuous, scheduler.PARALLEL_TASK)
-		
-		# Spin up wheel, tilt and wait 3 seconds for it to reach speed		
+
+		# Spin up wheel, tilt and wait 3 seconds for it to reach speed
 		scheduler.RegisterAutonomousTask("Set Shooter Speed 0.5", shooter.SetSpeed, scheduler.PARALLEL_TASK, shooter.SHOOTER_INFIELD)
 		scheduler.RegisterAutonomousTask("Tilt", tilt.TiltToValue, scheduler.PARALLEL_TASK, tilt.TILT_PYRIMID_SIDE_PRACTICE)
-		
+
 		# The wait.Wait() is just an enpty function. The scheduler just waits
 		# for the registered empty task to timeout
 		scheduler.RegisterAutonomousTimedTask("Wait 3 Seconds", wait.Wait, 3.0)
-		
+
 		# Add 3 sequential shots
 		scheduler.RegisterAutonomousTask("Shoot And Load1", shooter.ShootAndLoad)
 		scheduler.RegisterAutonomousTask("Shoot And Load2", shooter.ShootAndLoad)
 		scheduler.RegisterAutonomousTask("Shoot And Load3", shooter.ShootAndLoad)
-		
+
 		# Tilt back down and put wheel in powersaver mode
 		scheduler.RegisterAutonomousTask("SHOOTER POWER SAVING MODE", shooter.SetSpeed, scheduler.PARALLEL_TASK, shooter.SHOOTER_POWER_SAVING_MODE)
 		scheduler.RegisterAutonomousTask("Tilt", tilt.TiltToValue, scheduler.PARALLEL_TASK, tilt.TILT_PYRIMID_SIDE_PRACTICE)
-		
+
 
 def run():
 	"""
